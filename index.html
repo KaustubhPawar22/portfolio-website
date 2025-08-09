@@ -1,379 +1,230 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfolio — Smooth Scroll Animations</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio Website</title>
 
-  <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-
-  <!-- Lenis smooth scroll -->
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@0.2.27/bundled/lenis.min.js" defer></script>
+  <!-- GSAP Core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <!-- GSAP ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scrolling -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
 
   <style>
-    /* ---------------------
-       Basic layout & resets
-       --------------------- */
-    :root{
-      --bg:#0f1115;
-      --card:#0f1720;
-      --muted:#9aa6b2;
-      --accent:#61dafb;
-      --max-width:1200px;
-      --hero-img-size:420px; /* default hero image width */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #fff;
+      color: #111;
+      overflow-x: hidden;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:linear-gradient(180deg,#071018 0%, #07121a 100%);
-      color: #e6eef6;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden;
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 20px;
     }
-    a{color:var(--accent);text-decoration:none}
-
-    /* container to center content */
-    .wrap{
-      max-width:var(--max-width);
-      margin:0 auto;
-      padding:0 28px;
+    header, section {
+      padding: 60px 20px;
     }
-
-    /* ---------------------
-       Sections
-       --------------------- */
-    section{
-      min-height:100vh;
-      padding: 80px 0;
-      display:flex;
-      align-items:center;
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 60vh;
+      position: relative;
     }
-
-    /* ---------------------
-       HERO
-       --------------------- */
-    .hero{
-      position:relative;
-      overflow:visible;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 48px;
-      perspective: 1600px; /* gives depth for 3D rotation */
-      padding-top:40px;
-      padding-bottom:40px;
+    .hero-text {
+      max-width: 50%;
     }
-
-    .hero-inner{
-      width:50%;
-      min-width:320px;
-      max-width:640px;
-    }
-    .hero h1{
-      font-size: clamp(28px, 4.6vw, 48px);
-      margin:0 0 12px 0;
-      line-height:1.02;
-      letter-spacing:-0.5px;
-    }
-    .hero p.lead{
-      color:var(--muted);
-      margin:0 0 22px 0;
-      font-size:15px;
-    }
-    .cta{
-      display:inline-flex;
-      gap:12px;
-      align-items:center;
-      padding:10px 16px;
-      border-radius:10px;
-      background: rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.04);
-      cursor:pointer;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-    }
-
-    /* hero-image wrapper so we can rotate in 3D with perspective */
-    .hero-visual{
-      width:50%;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-width:300px;
-      transform-style: preserve-3d;
-      pointer-events:none; /* avoid accidental interactions while animating */
-    }
-
-    .hero-card {
-      width: var(--hero-img-size);
-      max-width: 86%;
-      transform-origin: center center;
-      border-radius:18px;
-      box-shadow: 0 20px 50px rgba(3,8,15,0.7);
-      overflow:hidden;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.04);
-      transition: box-shadow .25s ease;
-      will-change: transform;
+    .hero-visual {
+      width: 300px;
+      height: 400px;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
       backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      user-select: none;
     }
-
-    .hero-card img{
-      width:100%;
-      height:auto;
-      display:block;
-      object-fit:cover;
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
     }
-
-    /* small note under hero */
-    .hero-note{
-      color:var(--muted);
-      margin-top:12px;
-      font-size:13px;
+    p.lead {
+      font-size: 1.25rem;
+      margin-bottom: 30px;
+      color: #555;
     }
-
-    /* ---------------------
-       ABOUT / MIDDLE SECTION
-       --------------------- */
-    .about{
-      background: linear-gradient(180deg, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.0) 100%);
-      display:block;
-      padding-top:120px;
-      padding-bottom:120px;
+    button {
+      background: #2575fc;
+      border: none;
+      padding: 12px 24px;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background 0.3s ease;
     }
-    .about .wrap{
-      display:flex;
-      gap:32px;
-      align-items:flex-start;
+    button:hover {
+      background: #185ecf;
     }
-    .about .text{
-      flex:1;
-      min-width:320px;
+    section.about {
+      background: #f9f9f9;
     }
-    .about .side{
-      width:360px;
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 20px;
     }
-
-    /* ---------------------
-       PROJECTS - cascading cards
-       --------------------- */
-    .projects{
-      position:relative;
-      padding-top:100px;
-      padding-bottom:140px;
+    .project-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(20px);
     }
-    .projects h2{
-      margin:0 0 28px 0;
-    }
-    .projects-grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap:18px;
-    }
-    .project-card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
-      border-radius:12px;
-      padding: 16px;
-      min-height:200px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      border:1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 8px 30px rgba(2,6,12,0.6);
-      transform: translateY(30px);
-      opacity:0;
-      will-change:transform, opacity;
-    }
-    .project-img{
-      height:120px;
-      border-radius:10px;
-      overflow:hidden;
-      margin-bottom:12px;
-      background: linear-gradient(90deg,#07202b,#0e1420);
-    }
-    .project-card h3{margin:0 0 6px 0;font-size:16px}
-    .project-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.4}
-
-    /* small footer space */
-    footer{padding:40px 0;text-align:center;color:var(--muted)}
-
-    /* Responsive tweaks */
-    @media (max-width:900px){
-      .hero{flex-direction:column-reverse; gap:24px}
-      .hero-inner, .hero-visual{width:100%}
-      .hero-visual{transform: none;}
-      section{padding:52px 0}
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #777;
     }
   </style>
 </head>
 <body>
 
-  <!-- main wrapper -->
-  <main>
+  <header class="container hero">
+    <div class="hero-text">
+      <h1>Hi, I’m Kaustubh Pawar</h1>
+      <p class="lead">Business Analyst & Data Storyteller<br />I turn data into clear insights to empower decisions.</p>
+      <button onclick="alert('Projects coming soon!')">View Projects →</button>
+      <button onclick="alert('Contact form coming soon!')">Contact</button>
+    </div>
+    <div class="hero-visual"></div>
+  </header>
 
-    <!-- HERO -->
-    <section class="hero" id="hero">
-      <div class="wrap hero-inner">
-        <h1>Kaustubh Pawar<br><span style="font-weight:600;color:var(--muted);font-size:16px">Business Analyst • Data Storyteller</span></h1>
-        <p class="lead">I craft insights and dashboards that drive business decisions. Scroll to see interactive motion and projects.</p>
+  <section class="container about">
+    <h2>About Me</h2>
+    <p>I blend rigorous analysis with storytelling to make data actionable and insightful.</p>
+  </section>
 
-        <div style="display:flex;gap:12px;align-items:center;margin-top:18px">
-          <a class="cta" href="#projects">View projects →</a>
-          <a class="cta" href="#contact" style="opacity:.85">Contact</a>
-        </div>
+  <section class="container projects">
+    <h2>Selected Projects</h2>
+    <div class="projects-list">
+      <div class="project-card">Mumbai Housing Price Analysis</div>
+      <div class="project-card">Sales Operations Dashboard</div>
+      <div class="project-card">Churn Analysis</div>
+      <div class="project-card">Pricing Strategy</div>
+    </div>
+  </section>
 
-        <p class="hero-note">Tip: scroll slowly to see the hero card move, rotate and scale smoothly.</p>
-      </div>
-
-      <!-- visual on the right (card that flips/moves) -->
-      <div class="hero-visual" aria-hidden="true">
-        <div class="hero-card" id="heroCard">
-          <!-- placeholder image — replace with your own image. Keep same aspect ratio for best results -->
-          <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=8b5e44a2992b1a184883a22f92b6d9a8" alt="Portfolio hero visual">
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT / middle -->
-    <section class="about" id="about">
-      <div class="wrap" style="align-items:flex-start">
-        <div class="text">
-          <h2>About</h2>
-          <p style="color:var(--muted)">I blend rigorous analysis with storytelling to create clear, actionable insights. My work includes exploratory analysis, dashboarding, KPI design, and data-driven recommendations for stakeholders.</p>
-          <ul style="color:var(--muted);margin-top:12px">
-            <li>Tools: Excel, SQL, Python (pandas), Tableau / Power BI</li>
-            <li>Experience: Pricing analysis, market segmentation, operations dashboards</li>
-            <li>Deliverables: Story-driven reports, interactive dashboards, slide decks</li>
-          </ul>
-        </div>
-        <aside class="side">
-          <div style="background:rgba(255,255,255,0.02);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)">
-            <strong>Quick stats</strong>
-            <p style="color:var(--muted);margin-top:10px">10+ projects • 2 domain verticals • storytelling-focused dashboards</p>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section class="projects" id="projects">
-      <div class="wrap">
-        <h2>Selected Projects</h2>
-        <p style="color:var(--muted);margin-bottom:16px">Cascading cards animate into view as you reach this section.</p>
-
-        <div class="projects-grid" id="projectsGrid">
-          <!-- Example project cards - replace images and text -->
-          <article class="project-card">
-            <div class="project-img"></div>
-            <div>
-              <h3>Mumbai Housing Price Analysis</h3>
-              <p>Exploratory analysis, KPIs and an interactive Tableau dashboard demonstrating neighbourhood trends and price drivers.</p>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div class="project-img"></div>
-            <div>
-              <h3>Sales Ops Dashboard</h3>
-              <p>Designed automated dashboards for weekly sales monitoring and forecasting; reduced reporting time by 60%.</p>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div class="project-img"></div>
-            <div>
-              <h3>Churn Analysis</h3>
-              <p>Segmentation and root-cause analysis with recommended interventions that improved retention in pilot cohorts.</p>
-            </div>
-          </article>
-
-          <article class="project-card">
-            <div class="project-img"></div>
-            <div>
-              <h3>Pricing Strategy</h3>
-              <p>Price elasticity modelling and scenario analysis to propose optimal price bands by segment.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      © <span id="year"></span> — Built with GSAP + Lenis • Replace content & images with yours
-    </footer>
-  </main>
+  <footer>
+    © <span id="year"></span> — Built with GSAP + Lenis • Replace content & images with yours
+  </footer>
 
   <script>
-  // Helper: Show debug messages on the page
-  function showDebug(message, isError = false) {
-    let el = document.getElementById('debug');
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'debug';
-      el.style.position = 'fixed';
-      el.style.bottom = '10px';
-      el.style.left = '10px';
-      el.style.padding = '8px 12px';
-      el.style.background = isError ? 'rgba(255,0,0,0.8)' : 'rgba(0,0,0,0.7)';
-      el.style.color = '#fff';
-      el.style.fontSize = '14px';
-      el.style.zIndex = 9999;
-      el.style.borderRadius = '4px';
-      el.style.maxWidth = '90vw';
-      el.style.fontFamily = 'monospace';
-      document.body.appendChild(el);
+    // Debug overlay helper
+    function showDebug(msg, isError = false) {
+      let el = document.getElementById('debug');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'debug';
+        el.style.position = 'fixed';
+        el.style.bottom = '10px';
+        el.style.left = '10px';
+        el.style.padding = '8px 12px';
+        el.style.background = isError ? 'rgba(255,0,0,0.85)' : 'rgba(0,0,0,0.7)';
+        el.style.color = '#fff';
+        el.style.fontSize = '13px';
+        el.style.zIndex = 9999;
+        el.style.borderRadius = '4px';
+        el.style.fontFamily = 'monospace';
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
     }
-    el.textContent = message;
-  }
 
-  // Set footer year
-  try {
-    document.getElementById('year').textContent = new Date().getFullYear();
-    console.log("📅 Footer year set:", new Date().getFullYear());
-    showDebug("📅 Footer year set to " + new Date().getFullYear());
-  } catch (err) {
-    console.error("⚠️ Could not set footer year:", err);
-    showDebug("⚠️ Could not set footer year", true);
-  }
-
-  function initAnimations() {
-    console.log("🚀 initAnimations() running");
-    showDebug("🚀 initAnimations() running");
-
-    if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
-      console.error("❌ Required libs (GSAP, ScrollTrigger, Lenis) are not available.");
-      showDebug("❌ Required libs missing — check CDN links", true);
-      return;
+    try {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      console.log("📅 Year set:", new Date().getFullYear());
+      showDebug("📅 Year set OK");
+    } catch (e) {
+      console.error("💥 Footer year error:", e);
+      showDebug("💥 Year FAILED", true);
     }
-    console.log("✅ All required libraries are loaded.");
-    showDebug("✅ All required libraries are loaded");
 
-    // Example animation check
-    gsap.to(".hero-image", {
-      scrollTrigger: {
-        trigger: ".next-section",
-        start: "top center",
-        end: "bottom center",
-        scrub: true
-      },
-      x: 200,
-      rotateY: 180,
-      scale: 0.7,
-      ease: "none"
+    function initAnimations() {
+      console.log("🚀 Running initAnimations()");
+      showDebug("🚀 Animations init…");
+
+      if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
+        console.error("Missing GSAP / ScrollTrigger / Lenis");
+        showDebug("❌ GSAP/ScrollTrigger/Lenis missing", true);
+        return;
+      }
+
+      console.log("✅ Libraries loaded!");
+      showDebug("✅ Libs loaded");
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Lenis smooth scroll
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: t => t * (2 - t),
+        smoothWheel: true,
+        smoothTouch: false,
+      });
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Animate hero image on scroll
+      gsap.to(".hero-visual", {
+        scrollTrigger: {
+          trigger: ".about",
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+        },
+        x: 200,
+        rotateY: 180,
+        scale: 0.7,
+        transformOrigin: "center center",
+        ease: "none"
+      });
+
+      // Projects cascading animation
+      gsap.utils.toArray(".project-card").forEach((card, i) => {
+        gsap.fromTo(card, {
+          opacity: 0,
+          y: 20
+        }, {
+          opacity: 1,
+          y: 0,
+          delay: i * 0.15,
+          scrollTrigger: {
+            trigger: card,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          }
+        });
+      });
+    }
+
+    window.addEventListener('load', () => {
+      console.log("✅ Window loaded");
+      showDebug("✅ Window loaded…");
+      initAnimations();
     });
-  }
-
-  window.addEventListener('load', () => {
-    console.log("✅ Window loaded — about to run initAnimations");
-    showDebug("✅ Window loaded — starting animations");
-    initAnimations();
-  });
-</script>
+  </script>
 
 </body>
 </html>
