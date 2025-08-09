@@ -309,144 +309,71 @@
   </main>
 
   <script>
-    /* ---------------------
-       Minimal DOM readiness
-       --------------------- */
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    window.addEventListener('load', () => {
-      // Wait a tick so deferred scripts (gsap/lenis) are available
-      initAnimations();
-    });
-
-    function initAnimations(){
-      if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
-        console.error("Required libs (GSAP, ScrollTrigger, Lenis) are not available.");
-        return;
-      }
-
-      const heroCard = document.getElementById('heroCard');
-
-      // Register plugin
-      gsap.registerPlugin(ScrollTrigger);
-
-      /* ---------------------
-         Lenis smooth scroll
-         --------------------- */
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth easing
-        smooth: true,
-        direction: 'vertical'
-      });
-
-      function raf(time){
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
-
-      // keep ScrollTrigger in sync with Lenis
-      lenis.on('scroll', ScrollTrigger.update);
-
-      /* ---------------------
-         HERO animation (center -> right, rotateY -> 180, scale -> 0.7)
-         Controlled by scroll progress over the hero section.
-         The end is when the hero bottom hits top of the viewport (the next section enters view)
-         --------------------- */
-      gsap.to(heroCard, {
-        x: () => {
-          // move to right by 28vw on large screens, fallback to 110px on small screens
-          return window.innerWidth > 900 ? '28vw' : '12vw';
-        },
-        rotationY: 180,
-        scale: 0.7,
-        ease: "none",
-        transformPerspective: 1600,
-        transformOrigin: "center center",
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.6,   // scrub syncs animation to scroll progress with slight smoothing
-          // pin the hero so the movement feels anchored (optional: comment pin if you don't want pin)
-          // pin: true,
-          markers: false
-        }
-      });
-
-      /* ---------------------
-         When we reach the projects section: move the hero card back toward the left
-         and flip to rotationY: 0 so it shows the front again.
-         This creates the "moving to the left + flip to front" effect for section 3.
-         --------------------- */
-      gsap.to(heroCard, {
-        x: () => {
-          return window.innerWidth > 900 ? '-26vw' : '-6vw';
-        },
-        rotationY: 0,
-        scale: 0.7,
-        ease: "none",
-        transformPerspective: 1600,
-        transformOrigin: "center center",
-        scrollTrigger: {
-          trigger: "#projects",
-          start: "top 85%", // start when projects come into view
-          end: "top top",
-          scrub: 0.6,
-          // once the animation finishes it will hold the final transform; reverse on scroll up
-          toggleActions: "play reverse play reverse"
-        }
-      });
-
-      /* ---------------------
-         Slight micro-parallax: move hero-visual a bit for depth while scrolling beyond hero
-         --------------------- */
-      gsap.to(".hero-visual", {
-        y: () => (window.innerWidth > 900 ? -40 : -12),
-        ease: "none",
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: true
-        }
-      });
-
-      /* ---------------------
-         Projects: cascading effect
-         --------------------- */
-      gsap.utils.toArray('.project-card').forEach((card, i) => {
-        gsap.fromTo(card,
-          { y: 40, opacity: 0, scale: 0.995 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            ease: "power3.out",
-            duration: 0.9,
-            scrollTrigger: {
-              trigger: card,
-              start: "top 88%",
-              toggleActions: "play none none reverse"
-            },
-            delay: i * 0.03
-          }
-        );
-      });
-
-      /* ---------------------
-         Optional: refresh ScrollTrigger after fonts/images loaded
-         --------------------- */
-      window.addEventListener('load', () => {
-        setTimeout(() => ScrollTrigger.refresh(), 250);
-      });
-
-      /* ---------------------
-         Accessibility/perf tips printed in console
-         --------------------- */
-      console.info("Animations initialized. Replace sample images and tweak numbers (x, scale, rotationY) to taste.");
+  // Helper: Show debug messages on the page
+  function showDebug(message, isError = false) {
+    let el = document.getElementById('debug');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'debug';
+      el.style.position = 'fixed';
+      el.style.bottom = '10px';
+      el.style.left = '10px';
+      el.style.padding = '8px 12px';
+      el.style.background = isError ? 'rgba(255,0,0,0.8)' : 'rgba(0,0,0,0.7)';
+      el.style.color = '#fff';
+      el.style.fontSize = '14px';
+      el.style.zIndex = 9999;
+      el.style.borderRadius = '4px';
+      el.style.maxWidth = '90vw';
+      el.style.fontFamily = 'monospace';
+      document.body.appendChild(el);
     }
-  </script>
+    el.textContent = message;
+  }
+
+  // Set footer year
+  try {
+    document.getElementById('year').textContent = new Date().getFullYear();
+    console.log("📅 Footer year set:", new Date().getFullYear());
+    showDebug("📅 Footer year set to " + new Date().getFullYear());
+  } catch (err) {
+    console.error("⚠️ Could not set footer year:", err);
+    showDebug("⚠️ Could not set footer year", true);
+  }
+
+  function initAnimations() {
+    console.log("🚀 initAnimations() running");
+    showDebug("🚀 initAnimations() running");
+
+    if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
+      console.error("❌ Required libs (GSAP, ScrollTrigger, Lenis) are not available.");
+      showDebug("❌ Required libs missing — check CDN links", true);
+      return;
+    }
+    console.log("✅ All required libraries are loaded.");
+    showDebug("✅ All required libraries are loaded");
+
+    // Example animation check
+    gsap.to(".hero-image", {
+      scrollTrigger: {
+        trigger: ".next-section",
+        start: "top center",
+        end: "bottom center",
+        scrub: true
+      },
+      x: 200,
+      rotateY: 180,
+      scale: 0.7,
+      ease: "none"
+    });
+  }
+
+  window.addEventListener('load', () => {
+    console.log("✅ Window loaded — about to run initAnimations");
+    showDebug("✅ Window loaded — starting animations");
+    initAnimations();
+  });
+</script>
+
 </body>
 </html>
