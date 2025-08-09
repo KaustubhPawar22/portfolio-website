@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfolio — Smooth Scroll Animations</title>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+
+  <!-- Lenis smooth scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@0.2.27/bundled/lenis.min.js" defer></script>
+
+  <style>
+    /* ---------------------
+       Basic layout & resets
+       --------------------- */
+    :root{
+      --bg:#0f1115;
+      --card:#0f1720;
+      --muted:#9aa6b2;
+      --accent:#61dafb;
+      --max-width:1200px;
+      --hero-img-size:420px; /* default hero image width */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,#071018 0%, #07121a 100%);
+      color: #e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    a{color:var(--accent);text-decoration:none}
+
+    /* container to center content */
+    .wrap{
+      max-width:var(--max-width);
+      margin:0 auto;
+      padding:0 28px;
+    }
+
+    /* ---------------------
+       Sections
+       --------------------- */
+    section{
+      min-height:100vh;
+      padding: 80px 0;
+      display:flex;
+      align-items:center;
+    }
+
+    /* ---------------------
+       HERO
+       --------------------- */
+    .hero{
+      position:relative;
+      overflow:visible;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 48px;
+      perspective: 1600px; /* gives depth for 3D rotation */
+      padding-top:40px;
+      padding-bottom:40px;
+    }
+
+    .hero-inner{
+      width:50%;
+      min-width:320px;
+      max-width:640px;
+    }
+    .hero h1{
+      font-size: clamp(28px, 4.6vw, 48px);
+      margin:0 0 12px 0;
+      line-height:1.02;
+      letter-spacing:-0.5px;
+    }
+    .hero p.lead{
+      color:var(--muted);
+      margin:0 0 22px 0;
+      font-size:15px;
+    }
+    .cta{
+      display:inline-flex;
+      gap:12px;
+      align-items:center;
+      padding:10px 16px;
+      border-radius:10px;
+      background: rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.04);
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    }
+
+    /* hero-image wrapper so we can rotate in 3D with perspective */
+    .hero-visual{
+      width:50%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-width:300px;
+      transform-style: preserve-3d;
+      pointer-events:none; /* avoid accidental interactions while animating */
+    }
+
+    .hero-card {
+      width: var(--hero-img-size);
+      max-width: 86%;
+      transform-origin: center center;
+      border-radius:18px;
+      box-shadow: 0 20px 50px rgba(3,8,15,0.7);
+      overflow:hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: box-shadow .25s ease;
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .hero-card img{
+      width:100%;
+      height:auto;
+      display:block;
+      object-fit:cover;
+    }
+
+    /* small note under hero */
+    .hero-note{
+      color:var(--muted);
+      margin-top:12px;
+      font-size:13px;
+    }
+
+    /* ---------------------
+       ABOUT / MIDDLE SECTION
+       --------------------- */
+    .about{
+      background: linear-gradient(180deg, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.0) 100%);
+      display:block;
+      padding-top:120px;
+      padding-bottom:120px;
+    }
+    .about .wrap{
+      display:flex;
+      gap:32px;
+      align-items:flex-start;
+    }
+    .about .text{
+      flex:1;
+      min-width:320px;
+    }
+    .about .side{
+      width:360px;
+    }
+
+    /* ---------------------
+       PROJECTS - cascading cards
+       --------------------- */
+    .projects{
+      position:relative;
+      padding-top:100px;
+      padding-bottom:140px;
+    }
+    .projects h2{
+      margin:0 0 28px 0;
+    }
+    .projects-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:18px;
+    }
+    .project-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding: 16px;
+      min-height:200px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 8px 30px rgba(2,6,12,0.6);
+      transform: translateY(30px);
+      opacity:0;
+      will-change:transform, opacity;
+    }
+    .project-img{
+      height:120px;
+      border-radius:10px;
+      overflow:hidden;
+      margin-bottom:12px;
+      background: linear-gradient(90deg,#07202b,#0e1420);
+    }
+    .project-card h3{margin:0 0 6px 0;font-size:16px}
+    .project-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.4}
+
+    /* small footer space */
+    footer{padding:40px 0;text-align:center;color:var(--muted)}
+
+    /* Responsive tweaks */
+    @media (max-width:900px){
+      .hero{flex-direction:column-reverse; gap:24px}
+      .hero-inner, .hero-visual{width:100%}
+      .hero-visual{transform: none;}
+      section{padding:52px 0}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- main wrapper -->
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="wrap hero-inner">
+        <h1>Kaustubh Pawar<br><span style="font-weight:600;color:var(--muted);font-size:16px">Business Analyst • Data Storyteller</span></h1>
+        <p class="lead">I craft insights and dashboards that drive business decisions. Scroll to see interactive motion and projects.</p>
+
+        <div style="display:flex;gap:12px;align-items:center;margin-top:18px">
+          <a class="cta" href="#projects">View projects →</a>
+          <a class="cta" href="#contact" style="opacity:.85">Contact</a>
+        </div>
+
+        <p class="hero-note">Tip: scroll slowly to see the hero card move, rotate and scale smoothly.</p>
+      </div>
+
+      <!-- visual on the right (card that flips/moves) -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-card" id="heroCard">
+          <!-- placeholder image — replace with your own image. Keep same aspect ratio for best results -->
+          <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=8b5e44a2992b1a184883a22f92b6d9a8" alt="Portfolio hero visual">
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT / middle -->
+    <section class="about" id="about">
+      <div class="wrap" style="align-items:flex-start">
+        <div class="text">
+          <h2>About</h2>
+          <p style="color:var(--muted)">I blend rigorous analysis with storytelling to create clear, actionable insights. My work includes exploratory analysis, dashboarding, KPI design, and data-driven recommendations for stakeholders.</p>
+          <ul style="color:var(--muted);margin-top:12px">
+            <li>Tools: Excel, SQL, Python (pandas), Tableau / Power BI</li>
+            <li>Experience: Pricing analysis, market segmentation, operations dashboards</li>
+            <li>Deliverables: Story-driven reports, interactive dashboards, slide decks</li>
+          </ul>
+        </div>
+        <aside class="side">
+          <div style="background:rgba(255,255,255,0.02);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)">
+            <strong>Quick stats</strong>
+            <p style="color:var(--muted);margin-top:10px">10+ projects • 2 domain verticals • storytelling-focused dashboards</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="projects" id="projects">
+      <div class="wrap">
+        <h2>Selected Projects</h2>
+        <p style="color:var(--muted);margin-bottom:16px">Cascading cards animate into view as you reach this section.</p>
+
+        <div class="projects-grid" id="projectsGrid">
+          <!-- Example project cards - replace images and text -->
+          <article class="project-card">
+            <div class="project-img"></div>
+            <div>
+              <h3>Mumbai Housing Price Analysis</h3>
+              <p>Exploratory analysis, KPIs and an interactive Tableau dashboard demonstrating neighbourhood trends and price drivers.</p>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-img"></div>
+            <div>
+              <h3>Sales Ops Dashboard</h3>
+              <p>Designed automated dashboards for weekly sales monitoring and forecasting; reduced reporting time by 60%.</p>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-img"></div>
+            <div>
+              <h3>Churn Analysis</h3>
+              <p>Segmentation and root-cause analysis with recommended interventions that improved retention in pilot cohorts.</p>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-img"></div>
+            <div>
+              <h3>Pricing Strategy</h3>
+              <p>Price elasticity modelling and scenario analysis to propose optimal price bands by segment.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> — Built with GSAP + Lenis • Replace content & images with yours
+    </footer>
+  </main>
+
+  <script>
+    /* ---------------------
+       Minimal DOM readiness
+       --------------------- */
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    window.addEventListener('load', () => {
+      // Wait a tick so deferred scripts (gsap/lenis) are available
+      initAnimations();
+    });
+
+    function initAnimations(){
+      if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
+        console.error("Required libs (GSAP, ScrollTrigger, Lenis) are not available.");
+        return;
+      }
+
+      const heroCard = document.getElementById('heroCard');
+
+      // Register plugin
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* ---------------------
+         Lenis smooth scroll
+         --------------------- */
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth easing
+        smooth: true,
+        direction: 'vertical'
+      });
+
+      function raf(time){
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // keep ScrollTrigger in sync with Lenis
+      lenis.on('scroll', ScrollTrigger.update);
+
+      /* ---------------------
+         HERO animation (center -> right, rotateY -> 180, scale -> 0.7)
+         Controlled by scroll progress over the hero section.
+         The end is when the hero bottom hits top of the viewport (the next section enters view)
+         --------------------- */
+      gsap.to(heroCard, {
+        x: () => {
+          // move to right by 28vw on large screens, fallback to 110px on small screens
+          return window.innerWidth > 900 ? '28vw' : '12vw';
+        },
+        rotationY: 180,
+        scale: 0.7,
+        ease: "none",
+        transformPerspective: 1600,
+        transformOrigin: "center center",
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.6,   // scrub syncs animation to scroll progress with slight smoothing
+          // pin the hero so the movement feels anchored (optional: comment pin if you don't want pin)
+          // pin: true,
+          markers: false
+        }
+      });
+
+      /* ---------------------
+         When we reach the projects section: move the hero card back toward the left
+         and flip to rotationY: 0 so it shows the front again.
+         This creates the "moving to the left + flip to front" effect for section 3.
+         --------------------- */
+      gsap.to(heroCard, {
+        x: () => {
+          return window.innerWidth > 900 ? '-26vw' : '-6vw';
+        },
+        rotationY: 0,
+        scale: 0.7,
+        ease: "none",
+        transformPerspective: 1600,
+        transformOrigin: "center center",
+        scrollTrigger: {
+          trigger: "#projects",
+          start: "top 85%", // start when projects come into view
+          end: "top top",
+          scrub: 0.6,
+          // once the animation finishes it will hold the final transform; reverse on scroll up
+          toggleActions: "play reverse play reverse"
+        }
+      });
+
+      /* ---------------------
+         Slight micro-parallax: move hero-visual a bit for depth while scrolling beyond hero
+         --------------------- */
+      gsap.to(".hero-visual", {
+        y: () => (window.innerWidth > 900 ? -40 : -12),
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+
+      /* ---------------------
+         Projects: cascading effect
+         --------------------- */
+      gsap.utils.toArray('.project-card').forEach((card, i) => {
+        gsap.fromTo(card,
+          { y: 40, opacity: 0, scale: 0.995 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            ease: "power3.out",
+            duration: 0.9,
+            scrollTrigger: {
+              trigger: card,
+              start: "top 88%",
+              toggleActions: "play none none reverse"
+            },
+            delay: i * 0.03
+          }
+        );
+      });
+
+      /* ---------------------
+         Optional: refresh ScrollTrigger after fonts/images loaded
+         --------------------- */
+      window.addEventListener('load', () => {
+        setTimeout(() => ScrollTrigger.refresh(), 250);
+      });
+
+      /* ---------------------
+         Accessibility/perf tips printed in console
+         --------------------- */
+      console.info("Animations initialized. Replace sample images and tweak numbers (x, scale, rotationY) to taste.");
+    }
+  </script>
+</body>
+</html>
