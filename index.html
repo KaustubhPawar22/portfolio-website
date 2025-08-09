@@ -3,227 +3,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portfolio Website</title>
+  <title>Kaustubh Pawar - Business Analyst Portfolio</title>
 
-  <!-- GSAP Core -->
+  <!-- GSAP and ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <!-- GSAP ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Lenis Smooth Scrolling -->
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    /* Reset & basics */
+    * {
+      box-sizing: border-box;
       margin: 0; padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #fff;
       color: #111;
+      line-height: 1.5;
       overflow-x: hidden;
     }
-    .container {
-      max-width: 960px;
-      margin: auto;
-      padding: 20px;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
-    header, section {
-      padding: 60px 20px;
-    }
-    .hero {
+
+    /* Hero Section */
+    header.hero {
+      height: 100vh;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      min-height: 60vh;
+      text-align: center;
+      padding: 0 20px;
       position: relative;
     }
-    .hero-text {
-      max-width: 50%;
+    header.hero h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
-    .hero-visual {
-      width: 300px;
-      height: 400px;
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-      border-radius: 20px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-      backface-visibility: hidden;
-      transform-style: preserve-3d;
+    header.hero p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      font-weight: 300;
+    }
+    header.hero button {
+      background: #fff;
+      color: #2575fc;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 30px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+    }
+    header.hero button:hover {
+      background: #e0e8ff;
+    }
+    header.hero .hero-image {
+      margin-top: 40px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      backface-visibility: hidden;
+    }
+    header.hero .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
       user-select: none;
     }
-    h1 {
-      font-size: 2.8rem;
-      margin-bottom: 15px;
+    header.hero .hero-image:hover {
+      transform: scale(1.1);
     }
-    p.lead {
-      font-size: 1.25rem;
-      margin-bottom: 30px;
-      color: #555;
-    }
-    button {
-      background: #2575fc;
-      border: none;
-      padding: 12px 24px;
-      color: white;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-right: 10px;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #185ecf;
-    }
-    section.about {
+
+    /* Projects Section */
+    section.projects {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
       background: #f9f9f9;
+      min-height: 80vh;
     }
-    .projects {
+    section.projects h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      font-weight: 600;
+      color: #333;
+    }
+    .project-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-      gap: 20px;
+      gap: 25px;
     }
     .project-card {
       background: white;
-      padding: 20px;
+      padding: 25px;
       border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(30px);
+      transition: box-shadow 0.3s ease;
+      cursor: pointer;
     }
+    .project-card:hover {
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      transform: translateY(0);
+    }
+    .project-card h3 {
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #2575fc;
+    }
+    .project-card p {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    /* Footer */
     footer {
       text-align: center;
       padding: 20px;
-      font-size: 0.9rem;
       color: #777;
+      font-size: 0.9rem;
+      background: #222;
+      color: #aaa;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header.hero h1 {
+        font-size: 2rem;
+      }
+      header.hero p {
+        font-size: 1rem;
+      }
+      header.hero button {
+        font-size: 1rem;
+        padding: 12px 25px;
+      }
+      section.projects {
+        padding: 40px 10px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header class="container hero">
-    <div class="hero-text">
-      <h1>Hi, I’m Kaustubh Pawar</h1>
-      <p class="lead">Business Analyst & Data Storyteller<br />I turn data into clear insights to empower decisions.</p>
-      <button onclick="alert('Projects coming soon!')">View Projects →</button>
-      <button onclick="alert('Contact form coming soon!')">Contact</button>
+  <header class="hero">
+    <h1>Hi, I'm Kaustubh Pawar</h1>
+    <p>Business Analyst & Data Storyteller</p>
+    <button onclick="document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })">View Projects</button>
+    <div class="hero-image" tabindex="0">
+      <img src="https://i.pravatar.cc/300" alt="Kaustubh Pawar" />
     </div>
-    <div class="hero-visual"></div>
   </header>
 
-  <section class="container about">
-    <h2>About Me</h2>
-    <p>I blend rigorous analysis with storytelling to make data actionable and insightful.</p>
-  </section>
-
-  <section class="container projects">
+  <section id="projects" class="projects">
     <h2>Selected Projects</h2>
-    <div class="projects-list">
-      <div class="project-card">Mumbai Housing Price Analysis</div>
-      <div class="project-card">Sales Operations Dashboard</div>
-      <div class="project-card">Churn Analysis</div>
-      <div class="project-card">Pricing Strategy</div>
+    <div class="project-cards">
+      <div class="project-card" tabindex="0">
+        <h3>Mumbai Housing Price Analysis</h3>
+        <p>Detailed analysis of Mumbai’s housing market trends and price determinants.</p>
+      </div>
+      <div class="project-card" tabindex="0">
+        <h3>Sales Operations Dashboard</h3>
+        <p>Interactive dashboard providing insights on sales efficiency and performance.</p>
+      </div>
+      <div class="project-card" tabindex="0">
+        <h3>Churn Analysis</h3>
+        <p>Data-driven strategies to identify and reduce customer churn.</p>
+      </div>
+      <div class="project-card" tabindex="0">
+        <h3>Pricing Strategy</h3>
+        <p>Optimizing product pricing using competitive analysis and market data.</p>
+      </div>
     </div>
   </section>
 
   <footer>
-    © <span id="year"></span> — Built with GSAP + Lenis • Replace content & images with yours
+    © <span id="year"></span> Kaustubh Pawar — Built with ❤️ and GSAP
   </footer>
 
   <script>
-    // Debug overlay helper
-    function showDebug(msg, isError = false) {
-      let el = document.getElementById('debug');
-      if (!el) {
-        el = document.createElement('div');
-        el.id = 'debug';
-        el.style.position = 'fixed';
-        el.style.bottom = '10px';
-        el.style.left = '10px';
-        el.style.padding = '8px 12px';
-        el.style.background = isError ? 'rgba(255,0,0,0.85)' : 'rgba(0,0,0,0.7)';
-        el.style.color = '#fff';
-        el.style.fontSize = '13px';
-        el.style.zIndex = 9999;
-        el.style.borderRadius = '4px';
-        el.style.fontFamily = 'monospace';
-        document.body.appendChild(el);
-      }
-      el.textContent = msg;
-    }
+    // Set current year
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    try {
-      document.getElementById('year').textContent = new Date().getFullYear();
-      console.log("📅 Year set:", new Date().getFullYear());
-      showDebug("📅 Year set OK");
-    } catch (e) {
-      console.error("💥 Footer year error:", e);
-      showDebug("💥 Year FAILED", true);
-    }
+    // Register ScrollTrigger plugin
+    gsap.registerPlugin(ScrollTrigger);
 
-    function initAnimations() {
-      console.log("🚀 Running initAnimations()");
-      showDebug("🚀 Animations init…");
-
-      if (!window.gsap || !window.ScrollTrigger || !window.Lenis) {
-        console.error("Missing GSAP / ScrollTrigger / Lenis");
-        showDebug("❌ GSAP/ScrollTrigger/Lenis missing", true);
-        return;
-      }
-
-      console.log("✅ Libraries loaded!");
-      showDebug("✅ Libs loaded");
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      // Lenis smooth scroll
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: t => t * (2 - t),
-        smoothWheel: true,
-        smoothTouch: false,
-      });
-      function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
-
-      // Animate hero image on scroll
-      gsap.to(".hero-visual", {
-        scrollTrigger: {
-          trigger: ".about",
-          start: "top bottom",
-          end: "top top",
-          scrub: true,
-        },
-        x: 200,
-        rotateY: 180,
-        scale: 0.7,
-        transformOrigin: "center center",
-        ease: "none"
-      });
-
-      // Projects cascading animation
-      gsap.utils.toArray(".project-card").forEach((card, i) => {
-        gsap.fromTo(card, {
-          opacity: 0,
-          y: 20
-        }, {
-          opacity: 1,
-          y: 0,
+    // Animate project cards on scroll
+    gsap.utils.toArray('.project-card').forEach((card, i) => {
+      gsap.fromTo(card, 
+        {opacity: 0, y: 30}, 
+        {
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6, 
           delay: i * 0.15,
           scrollTrigger: {
             trigger: card,
-            start: "top 80%",
-            toggleActions: "play none none none",
+            start: 'top 80%',
+            toggleActions: 'play none none none'
           }
-        });
-      });
-    }
-
-    window.addEventListener('load', () => {
-      console.log("✅ Window loaded");
-      showDebug("✅ Window loaded…");
-      initAnimations();
+        }
+      );
     });
+
+    // Optional: Hero image subtle bounce on page load
+    gsap.fromTo('.hero-image', 
+      {scale: 0.95, y: 10}, 
+      {scale: 1, y: 0, duration: 1.2, ease: 'power2.out'}
+    );
   </script>
 
 </body>
